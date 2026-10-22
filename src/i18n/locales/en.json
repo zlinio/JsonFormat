@@ -32,6 +32,7 @@
     "reload": "Reload page"
   },
   "actions": {
+    "notifications": "Notifications",
     "closeToast": "Dismiss notification",
     "language": "Change language",
     "followBrowser": "Follow browser"

@@ -4,6 +4,9 @@ import { useTranslation } from "react-i18next";
 import { foldAll, unfoldAll } from "@codemirror/language";
 import type { ReactCodeMirrorRef } from "@uiw/react-codemirror";
 import { Icon } from "../../shared/components/Icon";
+import { IconButton } from "../../shared/components/IconButton";
+import { Button } from "../../shared/components/ui/button";
+import { Separator } from "../../shared/components/ui/separator";
 import { SiteControls } from "../../shared/components/SiteControls";
 import { useNotice } from "../../shared/components/ToastProvider";
 import { useAppearance, useToolDraft } from "../../app/AppProviders";
@@ -73,12 +76,12 @@ export default function JsonFormatPage() {
           <section className="pane input-pane" aria-labelledby="input-heading">
             <div className="pane-header flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <Link to="/" className="icon-button" aria-label={t("navigation.back")} title={t("navigation.back")}><Icon name="back" /></Link>
+                <IconButton asChild label={t("navigation.back")}><Link to="/"><Icon name="back" /></Link></IconButton>
                 <h2 id="input-heading">{t("json.pane.input")}</h2>
                 <span className="type-label">{t("json.pane.inputBadge")}</span>
               </div>
-              <button className="icon-button" disabled={!source} onClick={clearSource}
-                aria-label={t("json.actions.clear")} title={t("json.actions.clear")}><Icon name="trash" /></button>
+              <IconButton disabled={!source} onClick={clearSource}
+                label={t("json.actions.clear")}><Icon name="trash" /></IconButton>
             </div>
             <div className="editor-container">
               <JsonEditor value={source} dark={theme === "dark"} wrap indentation={2} onChange={setSource}
@@ -93,15 +96,15 @@ export default function JsonFormatPage() {
                 <span className="type-label output-label">{t("json.pane.outputBadge")}</span>
               </div>
               <div className="pane-actions flex items-center gap-1">
-                <button className="icon-button" disabled={!valid} aria-label={t("json.actions.foldAll")} title={t("json.actions.foldAll")}
-                  onClick={() => { const view = outputEditor.current?.view; if (view) foldAll(view); }}><Icon name="fold" /></button>
-                <button className="icon-button" disabled={!valid} aria-label={t("json.actions.unfoldAll")} title={t("json.actions.unfoldAll")}
-                  onClick={() => { const view = outputEditor.current?.view; if (view) unfoldAll(view); }}><Icon name="unfold" /></button>
-                <span className="toolbar-divider" />
-                <button className="icon-button" disabled={!valid} onClick={downloadOutput}
-                  aria-label={t("json.actions.download")} title={t("json.actions.download")}><Icon name="download" /></button>
-                <button className="icon-button" disabled={!valid} onClick={copyOutput}
-                  aria-label={t("json.actions.copy")} title={t("json.actions.copy")}><Icon name="copy" /></button>
+                <IconButton disabled={!valid} label={t("json.actions.foldAll")}
+                  onClick={() => { const view = outputEditor.current?.view; if (view) foldAll(view); }}><Icon name="fold" /></IconButton>
+                <IconButton disabled={!valid} label={t("json.actions.unfoldAll")}
+                  onClick={() => { const view = outputEditor.current?.view; if (view) unfoldAll(view); }}><Icon name="unfold" /></IconButton>
+                <Separator orientation="vertical" className="toolbar-divider" />
+                <IconButton disabled={!valid} onClick={downloadOutput}
+                  label={t("json.actions.download")}><Icon name="download" /></IconButton>
+                <IconButton disabled={!valid} onClick={copyOutput}
+                  label={t("json.actions.copy")}><Icon name="copy" /></IconButton>
                 <SiteControls />
               </div>
             </div>
@@ -112,10 +115,10 @@ export default function JsonFormatPage() {
                   {result.status === "error" ? <>
                     <div className="empty-symbol error-symbol"><Icon name="alert" width={30} height={30} /></div>
                     <h3>{t("json.state.errorTitle")}</h3><p>{issueMessage(t, result.issue)}</p>
-                    <button className="text-button error-jump" onClick={jumpToError}>
+                    <Button variant="ghost" size="sm" className="error-jump" onClick={jumpToError}>
                       {t("json.state.jumpToError", { line: result.issue.line, column: result.issue.column })}
                       <Icon name="arrow" width={15} height={15} />
-                    </button>
+                    </Button>
                   </> : result.status === "pending" ? <>
                     <div className="empty-symbol"><span className="spinner" /></div>
                     <h3>{t("json.state.pendingTitle")}</h3><p>{t("json.state.pendingBody")}</p>

@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import { useTheme } from "../shared/hooks/useTheme";
 import { ToastProvider } from "../shared/components/ToastProvider";
+import { TooltipProvider } from "../shared/components/ui/tooltip";
 
 const AppearanceContext = createContext<ReturnType<typeof useTheme> | null>(null);
 const DraftContext = createContext<Map<string, string> | null>(null);
@@ -10,7 +11,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
   const appearance = useTheme();
   const [drafts] = useState(() => new Map<string, string>());
   return <AppearanceContext.Provider value={appearance}>
-    <DraftContext.Provider value={drafts}><ToastProvider>{children}</ToastProvider></DraftContext.Provider>
+    <DraftContext.Provider value={drafts}>
+      <TooltipProvider><ToastProvider theme={appearance.theme}>{children}</ToastProvider></TooltipProvider>
+    </DraftContext.Provider>
   </AppearanceContext.Provider>;
 }
 

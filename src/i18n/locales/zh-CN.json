@@ -32,6 +32,7 @@
     "reload": "刷新页面"
   },
   "actions": {
+    "notifications": "通知",
     "closeToast": "关闭提示",
     "language": "切换语言",
     "followBrowser": "跟随浏览器"

@@ -1,33 +1,34 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import type { resources } from "../../i18n/resources";
-import { Icon } from "./Icon";
+import type { Theme } from "../lib/theme";
+import { Toaster } from "./ui/sonner";
 
 type NoticeKey = keyof typeof resources.en.translation.notifications;
 type Notice = { key: NoticeKey; filename?: string };
 const NoticeContext = createContext<((key: NoticeKey, filename?: string) => void) | null>(null);
+const noticeId = "toolbox-notice";
 
-export function ToastProvider({ children }: { children: ReactNode }) {
+function NoticeMessage({ notice }: { notice: Notice }) {
   const { t } = useTranslation();
-  const [notice, setNotice] = useState<Notice | null>(null);
-  const timer = useRef<number | undefined>(undefined);
+  return <span>{t(`notifications.${notice.key}`, { filename: notice.filename })}</span>;
+}
+
+export function ToastProvider({ children, theme }: { children: ReactNode; theme: Theme }) {
+  const { t } = useTranslation();
   const notify = useCallback((key: NoticeKey, filename?: string) => {
-    setNotice({ key, filename });
-    window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => setNotice(null), 3500);
+    const show = key === "copyFallback" ? toast.warning : toast.success;
+    show(<NoticeMessage notice={{ key, filename }} />, { id: noticeId, toasterId: "toolbox" });
   }, []);
-  useEffect(() => () => window.clearTimeout(timer.current), []);
+  useEffect(() => () => { toast.dismiss(noticeId); }, []);
+
   return <NoticeContext.Provider value={notify}>
     {children}
-    <div className={"toast" + (notice ? " is-visible" : "")} role="status" aria-live="polite">
-      {notice && <><Icon name="check" width={17} height={17} />
-        <span>{t(`notifications.${notice.key}`, { filename: notice.filename })}</span>
-        <button type="button" className="icon-button" aria-label={t("actions.closeToast")} onClick={() => setNotice(null)}>
-          <Icon name="close" width={15} height={15} />
-        </button>
-      </>}
-    </div>
+    <Toaster id="toolbox" theme={theme} position="bottom-center" closeButton duration={3500} visibleToasts={1}
+      customAriaLabel={t("actions.notifications")} containerAriaLabel={t("actions.notifications")}
+      toastOptions={{ closeButtonAriaLabel: t("actions.closeToast") }} />
   </NoticeContext.Provider>;
 }
 

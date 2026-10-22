@@ -58,4 +58,6 @@
 @media (max-width: 420px) {
 .json-format .type-label { display: none; }
 .json-format .toolbar-divider { display: none; }
+.json-format .pane-header { padding: 0 8px; }
+.json-format .pane-actions, .json-format .site-controls { gap: 2px; }
 }

@@ -13,6 +13,7 @@
 - 工具按需加载，共用语言、主题和通知组件。
 - JSON 内容在浏览器内处理；页面内切换工具保留输入草稿，刷新后清空。
 - 不设置输入或格式化输出的字符上限，实际处理能力取决于浏览器和设备内存。保留 256 层嵌套保护，防止递归解析器栈溢出。
+- 基于 shadcn/ui 的按钮、语言菜单、悬浮提示、分隔线和 Sonner 通知，统一键盘操作与焦点反馈。
 
 ## 本地开发
 
@@ -45,6 +46,17 @@ src/
 ```
 
 新增工具时，在 `src/tools/` 下创建独立模块，在 `src/tool-registry.ts` 中登记路由、名称、描述和懒加载入口，并补充中英文翻译。首页与路由会读取注册表。
+
+## UI 组件
+
+通过 [shadcn/ui 官方 CLI](https://ui.shadcn.com/docs/installation/vite) 引入的 Radix 组件源码保存在 `src/shared/components/ui/`，配置位于 `components.json`；图标使用 Lucide。
+
+- 工具栏统一使用 `IconButton`，提供 32px 点击区域、国际化标签和 Tooltip。
+- 颜色通过 `src/shared/styles.css` 中的 Tailwind 语义变量映射到原有主题，继续使用中性黑色和全局平滑过渡。
+- Sonner 直接接收现有主题状态；语言菜单继续支持“跟随浏览器”，沿用原来的偏好存储键。
+- 后续可以使用 `bunx --bun shadcn@latest add <组件名>` 添加组件。更新已有组件时需保留主题、工具函数路径等本地定制。
+
+shadcn/ui 源码的 MIT 许可见 `THIRD_PARTY_NOTICES.md`。
 
 ## GitHub Pages
 
