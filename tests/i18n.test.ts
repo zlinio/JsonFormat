@@ -3,7 +3,7 @@ import { createInstance } from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { languageStorageKey, normalizeLanguage, resources } from "../src/i18n/resources";
 import { issueMessage } from "../src/tools/json-format/i18n/issueMessage";
-import { formatJson, MAX_INPUT_LENGTH, parserIssueCodes } from "../src/tools/json-format/lib/json";
+import { formatJson, MAX_DEPTH, parserIssueCodes } from "../src/tools/json-format/lib/json";
 import type { IssueCode, JsonIssue } from "../src/tools/json-format/lib/json";
 import { createLanguagePreference } from "../src/i18n/languagePreference";
 
@@ -34,8 +34,8 @@ describe("translation resources", () => {
   test.each(["en", "zh-CN"] as const)("every parser and runtime error has a usable %s translation", async locale => {
     const instance = createInstance();
     await instance.init({ resources, lng: locale, fallbackLng: "en", interpolation: { escapeValue: false } });
-    const codes: IssueCode[] = [...parserIssueCodes, "InvalidJson", "InputTooLarge", "TooDeep",
-      "OutputTooLarge", "WorkerUnavailable", "ProcessingFailed"];
+    const codes: IssueCode[] = [...parserIssueCodes, "InvalidJson", "TooDeep",
+      "WorkerUnavailable", "ProcessingFailed"];
     for (const code of codes) {
       const issue: JsonIssue = { code, params: { limit: 256 }, offset: 0, length: 0, line: 1, column: 1 };
       const message = issueMessage(instance.t, issue);
@@ -59,12 +59,12 @@ describe("translation resources", () => {
     expect(result.issue).toMatchObject({ code: "ColonExpected", line: 2, column: 7 });
   });
 
-  test("formats size limits and line positions with interpolation", async () => {
+  test("formats nesting limits and line positions with interpolation", async () => {
     const instance = createInstance();
     await instance.init({ resources, lng: "en" });
-    const issue: JsonIssue = { code: "InputTooLarge", params: { limit: MAX_INPUT_LENGTH },
+    const issue: JsonIssue = { code: "TooDeep", params: { limit: MAX_DEPTH },
       offset: 0, length: 0, line: 1, column: 1 };
-    expect(issueMessage(instance.t, issue)).toContain("2,000,000");
+    expect(issueMessage(instance.t, issue)).toContain("256");
     expect(instance.t("json.state.jumpToError", { line: 83, column: 12 })).toBe("Go to line 83, column 12");
     await instance.changeLanguage("zh-CN");
     expect(instance.t("json.state.jumpToError", { line: 83, column: 12 })).toBe("定位到第 83 行，第 12 列");

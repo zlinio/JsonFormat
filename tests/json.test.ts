@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { formatJson, MAX_DEPTH, MAX_INPUT_LENGTH } from "../src/tools/json-format/lib/json";
+import { formatJson, isBlankJsonInput, MAX_DEPTH } from "../src/tools/json-format/lib/json";
 import { applyEdits, format } from "jsonc-parser";
 
 const SAMPLE =
@@ -164,28 +164,45 @@ describe("strict validation and diagnostics", () => {
     },
   );
 
-  test("rejects oversized input with a readable error", () => {
-    const result = formatJson("x".repeat(MAX_INPUT_LENGTH + 1));
+  test("formats input beyond the former character limit without losing values", () => {
+    const value = "x".repeat(2_000_001);
+    const source = `{"text":"${value}","id":9007199254740993,"price":19.9900}`;
+    expect(output(source)).toBe(`{\n  "text": "${value}",\n  "id": 9007199254740993,\n  "price": 19.9900\n}`);
+  });
+
+  test("treats whitespace beyond the former character limit as empty", () => {
+    const source = " \t\r\n".repeat(500_001);
+    expect(isBlankJsonInput(source)).toBe(true);
+    expect(formatJson(source)).toEqual({ status: "empty" });
+  });
+
+  test("reports a syntax error after the former input limit at its actual position", () => {
+    const source = `{"text":"${"x".repeat(2_000_001)}",\n"invalid" 1}`;
+    const result = formatJson(source);
     expect(result.status).toBe("error");
     if (result.status === "error") {
-      expect(result.issue.code).toBe("InputTooLarge");
-      expect(result.issue.params).toEqual({ limit: MAX_INPUT_LENGTH });
+      expect(result.issue).toMatchObject({
+        code: "ColonExpected", offset: source.lastIndexOf("1"), line: 2, column: 11,
+      });
     }
   });
 
   test("handles a larger payload without altering its contents", () => {
     const source = JSON.stringify(
-      Array.from({ length: 6000 }, (_, id) => ({ id, text: "格式化测试", enabled: true })),
+      Array.from({ length: 60_000 }, (_, id) => ({ id, text: "格式化测试", enabled: true })),
     );
+    expect(source.length).toBeGreaterThan(2_000_000);
     expect(JSON.parse(output(source))).toEqual(JSON.parse(source));
   });
 
-  test("bounds output expansion for deeply nested large arrays", () => {
-    const result = formatJson(
-      "[".repeat(200) + Array(15000).fill("0").join(",") + "]".repeat(200),
-      4,
-    );
-    expect(result.status).toBe("error");
-    if (result.status === "error") expect(result.issue.code).toBe("OutputTooLarge");
+  test("formats expanded output beyond the former output limit", () => {
+    const source = "[".repeat(200) + Array(15000).fill("0").join(",") + "]".repeat(200);
+    const result = formatJson(source, 4);
+    expect(result.status).toBe("valid");
+    if (result.status !== "valid") return;
+    expect(result.output.length).toBeGreaterThan(10_000_000);
+    expect(JSON.parse(result.output)).toEqual(JSON.parse(source));
+    expect(result.lines).toBe(15_400);
+    expect(result.bytes).toBe(result.output.length);
   });
 });

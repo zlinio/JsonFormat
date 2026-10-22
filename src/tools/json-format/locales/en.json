@@ -50,9 +50,7 @@
     "InvalidEscapeCharacter": "Invalid escape character in the string.",
     "InvalidCharacter": "Unescaped control character in the string.",
     "InvalidJson": "Invalid JSON syntax.",
-    "InputTooLarge": "Input is too large. The limit is {{limit, number}} characters.",
     "TooDeep": "Nesting exceeds {{limit}} levels. Simplify the JSON structure.",
-    "OutputTooLarge": "Formatted output is too large. Reduce the number of array elements or nesting levels.",
     "WorkerUnavailable": "The formatter could not start. Refresh the page and try again.",
     "ProcessingFailed": "Unable to process this content. Reduce its size or check the JSON structure."
   },

@@ -1,8 +1,6 @@
 import { createScanner, format, printParseErrorCode, visit } from "jsonc-parser";
 
-export const MAX_INPUT_LENGTH = 2_000_000;
 export const MAX_DEPTH = 256;
-export const MAX_OUTPUT_LENGTH = 10_000_000;
 export type Indentation = 2 | 4;
 export const parserIssueCodes = [
   "InvalidSymbol", "InvalidNumberFormat", "PropertyNameExpected", "ValueExpected",
@@ -11,8 +9,8 @@ export const parserIssueCodes = [
   "UnexpectedEndOfString", "UnexpectedEndOfNumber", "InvalidUnicode",
   "InvalidEscapeCharacter", "InvalidCharacter",
 ] as const;
-export type IssueCode = typeof parserIssueCodes[number] | "InvalidJson" | "InputTooLarge"
-  | "TooDeep" | "OutputTooLarge" | "WorkerUnavailable" | "ProcessingFailed";
+export type IssueCode = typeof parserIssueCodes[number] | "InvalidJson"
+  | "TooDeep" | "WorkerUnavailable" | "ProcessingFailed";
 export interface JsonIssue {
   code: IssueCode;
   params?: { limit: number };
@@ -27,7 +25,7 @@ export type FormatResult =
   | { status: "valid"; output: string; lines: number; bytes: number; duration: number };
 
 export function isBlankJsonInput(source: string): boolean {
-  return source.length <= MAX_INPUT_LENGTH && /^[ \t\r\n]*$/.test(source);
+  return /^[ \t\r\n]*$/.test(source);
 }
 
 export function locateIssue(
@@ -54,12 +52,6 @@ export function locateIssue(
 // through JavaScript Number or stringify a parsed object.
 export function formatJson(source: string, indentation: Indentation = 2): FormatResult {
   const started = performance.now();
-  if (source.length > MAX_INPUT_LENGTH) {
-    return {
-      status: "error",
-      issue: locateIssue(source, 0, 0, "InputTooLarge", { limit: MAX_INPUT_LENGTH }),
-    };
-  }
   if (isBlankJsonInput(source)) return { status: "empty" };
 
   // Bound recursion before entering the third-party recursive parser.
@@ -113,16 +105,6 @@ export function formatJson(source: string, indentation: Indentation = 2): Format
     insertSpaces: true,
     eol: "\n",
   }).sort((a, b) => a.offset - b.offset || a.length - b.length);
-  const outputLength = edits.reduce(
-    (length, edit) => length + edit.content.length - edit.length,
-    normalized.length,
-  );
-  if (outputLength > MAX_OUTPUT_LENGTH) {
-    return {
-      status: "error",
-      issue: locateIssue(source, 0, 0, "OutputTooLarge"),
-    };
-  }
   // Apply the library's edits in one pass. Its applyEdits implementation copies
   // the whole string per edit, which is expensive for large arrays.
   const chunks: string[] = [];

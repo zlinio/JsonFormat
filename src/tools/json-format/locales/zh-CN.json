@@ -50,9 +50,7 @@
     "InvalidEscapeCharacter": "字符串中存在无效的转义字符。",
     "InvalidCharacter": "字符串中包含未转义的控制字符。",
     "InvalidJson": "JSON 语法不正确。",
-    "InputTooLarge": "内容过大，最多支持 {{limit, number}} 个字符。请缩小内容后重试。",
     "TooDeep": "嵌套超过 {{limit}} 层，请简化 JSON 结构。",
-    "OutputTooLarge": "展开后的内容过大，请减少数组元素或嵌套层数后重试。",
     "WorkerUnavailable": "格式化服务启动失败，请刷新页面后重试。",
     "ProcessingFailed": "无法处理这段内容，请缩小内容或检查 JSON 结构后重试。"
   },
