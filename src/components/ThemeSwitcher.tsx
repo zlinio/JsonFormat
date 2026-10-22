@@ -8,8 +8,9 @@ export function ThemeSwitcher({ theme, onChange }: {
   const { t } = useTranslation();
   const nextTheme = theme === "dark" ? "light" : "dark";
   const label = t(nextTheme === "light" ? "theme.switchToLight" : "theme.switchToDark");
-  return <button type="button" className="icon-button" aria-label={label} title={label}
+  return <button type="button" className="icon-button theme-toggle" aria-label={label} title={label}
     onClick={() => onChange(nextTheme)}>
-    <Icon name={nextTheme === "light" ? "sun" : "moon"} />
+    <Icon name="sun" className={nextTheme === "light" ? "is-visible" : undefined} />
+    <Icon name="moon" className={nextTheme === "dark" ? "is-visible" : undefined} />
   </button>;
 }

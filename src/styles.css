@@ -5,6 +5,32 @@
   --font-code: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
+/* Animate the inherited palette once, including editor tokens and dotted backgrounds. */
+@property --page { syntax: "<color>"; inherits: true; initial-value: #fff; }
+@property --surface { syntax: "<color>"; inherits: true; initial-value: #fff; }
+@property --surface-alt { syntax: "<color>"; inherits: true; initial-value: #f6f8fb; }
+@property --ink { syntax: "<color>"; inherits: true; initial-value: #23364b; }
+@property --code-ink { syntax: "<color>"; inherits: true; initial-value: #304761; }
+@property --code-key { syntax: "<color>"; inherits: true; initial-value: #2859c6; }
+@property --code-number { syntax: "<color>"; inherits: true; initial-value: #98601c; }
+@property --code-literal { syntax: "<color>"; inherits: true; initial-value: #8057b3; }
+@property --muted { syntax: "<color>"; inherits: true; initial-value: #728196; }
+@property --border { syntax: "<color>"; inherits: true; initial-value: #e0e7ef; }
+@property --accent { syntax: "<color>"; inherits: true; initial-value: #2859c6; }
+@property --accent-wash { syntax: "<color>"; inherits: true; initial-value: #edf3ff; }
+@property --teal { syntax: "<color>"; inherits: true; initial-value: #007b70; }
+@property --teal-wash { syntax: "<color>"; inherits: true; initial-value: #eaf6f3; }
+@property --active-line { syntax: "<color>"; inherits: true; initial-value: #f3f6fb; }
+@property --selection { syntax: "<color>"; inherits: true; initial-value: #dbe7ff; }
+@property --line-number { syntax: "<color>"; inherits: true; initial-value: #a1aebe; }
+@property --danger { syntax: "<color>"; inherits: true; initial-value: #b54235; }
+@property --danger-wash { syntax: "<color>"; inherits: true; initial-value: #fff4f1; }
+@property --menu-surface { syntax: "<color>"; inherits: true; initial-value: #fff; }
+@property --shadow { syntax: "<color>"; inherits: true; initial-value: #15203224; }
+@property --search-match { syntax: "<color>"; inherits: true; initial-value: #f6e7bd; }
+@property --search-selected { syntax: "<color>"; inherits: true; initial-value: #ecd18b; }
+@property --scrollbar { syntax: "<color>"; inherits: true; initial-value: #bec6d0; }
+
 :root {
   font-family: var(--font-body);
   color: var(--ink);
@@ -37,6 +63,12 @@
   --search-match: #f6e7bd;
   --search-selected: #ecd18b;
   --scrollbar: #bec6d0;
+  transition-property: --page, --surface, --surface-alt, --ink, --code-ink, --code-key,
+    --code-number, --code-literal, --muted, --border, --accent, --accent-wash,
+    --teal, --teal-wash, --active-line, --selection, --line-number, --danger,
+    --danger-wash, --menu-surface, --shadow, --search-match, --search-selected, --scrollbar;
+  transition-duration: 260ms;
+  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
 }
 
 :root[data-theme="dark"] {
@@ -93,6 +125,9 @@ main { padding: 0; }
 .type-label { font: 9px var(--font-code); color: var(--muted); letter-spacing: .8px; background: var(--surface-alt); padding: 3px 5px; border-radius: 4px; }
 .output-label { color: var(--teal); background: var(--teal-wash); }
 .icon-button { width: 29px; height: 29px; padding: 0; display: inline-flex; align-items: center; justify-content: center; color: var(--muted); background: transparent; border: 0; border-radius: 5px; }
+.theme-toggle { display: inline-grid; place-items: center; }
+.theme-toggle > svg { grid-area: 1 / 1; opacity: 0; transform: rotate(-35deg) scale(.75); transition: opacity 200ms ease, transform 260ms cubic-bezier(.4, 0, .2, 1); }
+.theme-toggle > svg.is-visible { opacity: 1; transform: rotate(0) scale(1); }
 .icon-button:not(:disabled):hover, .text-button:not(:disabled):hover { background: var(--accent-wash); color: var(--accent); }
 .text-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 5px; color: var(--muted); background: transparent; padding: 6px 8px; font-size: 11px; white-space: nowrap; }
 .editor-container { height: max(320px, calc(100dvh - var(--pane-header-height))); min-width: 0; position: relative; }
