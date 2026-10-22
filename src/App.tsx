@@ -5,6 +5,8 @@ import type { ReactCodeMirrorRef } from "@uiw/react-codemirror";
 import { Icon } from "./components/Icon";
 import { JsonEditor } from "./components/JsonEditor";
 import { LanguageSwitcher } from "./components/LanguageSwitcher";
+import { ThemeSwitcher } from "./components/ThemeSwitcher";
+import { useTheme } from "./hooks/useTheme";
 import { useJsonFormatter } from "./hooks/useJsonFormatter";
 import { issueMessage } from "./i18n/issueMessage";
 
@@ -15,6 +17,7 @@ type Notice = {
 
 export default function App() {
   const { t, i18n } = useTranslation();
+  const { theme, preference, setPreference } = useTheme();
   const [source, setSource] = useState("");
   const [toast, setToast] = useState<Notice | null>(null);
   const toastTimer = useRef<number | undefined>(undefined);
@@ -95,7 +98,7 @@ export default function App() {
                 aria-label={t("actions.clear")} title={t("actions.clear")}><Icon name="trash" /></button>
             </div>
             <div className="editor-container">
-              <JsonEditor value={source} dark={false} wrap indentation={2} onChange={setSource}
+              <JsonEditor value={source} dark={theme === "dark"} wrap indentation={2} onChange={setSource}
                 editorRef={inputEditor} issue={result.status === "error" ? result.issue : undefined} />
             </div>
           </section>
@@ -117,11 +120,12 @@ export default function App() {
                 <button className="icon-button" disabled={!valid} onClick={copyOutput}
                   aria-label={t("actions.copy")} title={t("actions.copy")}><Icon name="copy" /></button>
                 <LanguageSwitcher />
+                <ThemeSwitcher theme={theme} preference={preference} onChange={setPreference} />
               </div>
             </div>
             <div className="editor-container result-container" aria-busy={result.status === "pending"}>
               {result.status === "valid"
-                ? <JsonEditor value={result.output} dark={false} wrap indentation={2} readOnly editorRef={outputEditor} />
+                ? <JsonEditor value={result.output} dark={theme === "dark"} wrap indentation={2} readOnly editorRef={outputEditor} />
                 : <div className={"result-placeholder" + (result.status === "error" ? " has-error" : "")} role="status" aria-live="polite">
                   {result.status === "error" ? <>
                     <div className="empty-symbol error-symbol"><Icon name="alert" width={30} height={30} /></div>

@@ -42,8 +42,10 @@ export function JsonEditor({
   const localRef = useRef<ReactCodeMirrorRef>(null);
   const editor = editorRef ?? localRef;
   const languageCompartment = useMemo(() => new Compartment(), []);
+  const themeCompartment = useMemo(() => new Compartment(), []);
+  const themeExtension = useMemo(() => EditorView.theme({}, { dark }), [dark]);
   const languageExtension = useMemo(() => editorLanguage(locale, readOnly), [locale, readOnly]);
-  const configureLanguage = useCallback((view: EditorView) => {
+  const configureEditor = useCallback((view: EditorView) => {
     const panel = view.dom.querySelector(".cm-search");
     const field = (name: string) => panel?.querySelector<HTMLInputElement>('input[name="' + name + '"]');
     const searchField = field("search");
@@ -57,23 +59,24 @@ export function JsonEditor({
       wholeWord: field("word")?.checked,
     })), languageCompartment.reconfigure(languageExtension)]
       : [languageCompartment.reconfigure(languageExtension)];
-    view.dispatch({ effects });
+    view.dispatch({ effects: [...effects, themeCompartment.reconfigure(themeExtension)] });
     view.scrollDOM.scrollTop = scrollTop;
     view.scrollDOM.scrollLeft = scrollLeft;
     if (active instanceof HTMLElement && active.isConnected && document.activeElement !== active) {
       active.focus({ preventScroll: true });
     }
-  }, [languageCompartment, languageExtension]);
+  }, [languageCompartment, languageExtension, themeCompartment, themeExtension]);
   // Run after the wrapper has applied its own extension configuration.
   useEffect(() => {
-    if (editor.current?.view) configureLanguage(editor.current.view);
-  }, [configureLanguage, editor]);
+    if (editor.current?.view) configureEditor(editor.current.view);
+  }, [configureEditor, editor]);
   const extensions = useMemo(
     () => [
       json(),
       search(),
       jsonFoldGutter(),
       languageCompartment.of([]),
+      themeCompartment.of([]),
       translateOpenEditorUI,
       indentUnit.of(" ".repeat(indentation)),
       syntaxHighlighting(
@@ -123,11 +126,10 @@ export function JsonEditor({
           },
           ".cm-panels": { backgroundColor: "var(--surface-alt)", color: "var(--ink)" },
         },
-        { dark },
       ),
       ...(wrap ? [EditorView.lineWrapping] : []),
     ],
-    [dark, wrap, indentation, readOnly, languageCompartment],
+    [wrap, indentation, readOnly, languageCompartment, themeCompartment],
   );
 
   useEffect(() => {
@@ -159,7 +161,7 @@ export function JsonEditor({
   return (
     <CodeMirror
       ref={editor}
-      onCreateEditor={configureLanguage}
+      onCreateEditor={configureEditor}
       value={value}
       onChange={onChange}
       className="json-editor"

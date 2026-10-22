@@ -5,6 +5,17 @@
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#ffffff" />
+    <style>html { background: #fff; color-scheme: light; } html[data-theme="dark"] { background: #0c0c0c; color-scheme: dark; }</style>
+    <script>
+      // Apply the saved appearance before styles and React load to avoid a white flash.
+      (() => {
+        let preference;
+        try { preference = localStorage.getItem("json-format.theme"); } catch {}
+        const dark = preference === "dark" || (preference !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+        document.querySelector('meta[name="theme-color"]').content = dark ? "#0c0c0c" : "#ffffff";
+      })();
+    </script>
     <meta name="description" content="粘贴 JSON，自动格式化、校验和折叠。所有内容仅在浏览器内处理，支持无损数字、复制和下载。" />
     <title>JSON Format · 结构，一目了然</title>
   </head>

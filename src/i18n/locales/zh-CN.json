@@ -20,6 +20,12 @@
     "language": "切换语言",
     "followBrowser": "跟随浏览器"
   },
+  "theme": {
+    "change": "切换主题",
+    "system": "跟随系统",
+    "light": "浅色",
+    "dark": "深色"
+  },
   "editor": {
     "inputLabel": "JSON 输入",
     "outputLabel": "格式化 JSON 结果",

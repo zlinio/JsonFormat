@@ -20,6 +20,12 @@
     "language": "Change language",
     "followBrowser": "Follow browser"
   },
+  "theme": {
+    "change": "Change theme",
+    "system": "Follow system",
+    "light": "Light",
+    "dark": "Dark"
+  },
   "editor": {
     "inputLabel": "JSON input",
     "outputLabel": "Formatted JSON output",
