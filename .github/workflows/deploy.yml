@@ -1,7 +1,9 @@
 name: Deploy to GitHub Pages
 
-# Manual only: pushing this workflow does not run a build or publish a site.
+# Deploy on pushes to main, with a manual trigger available for retries.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -21,6 +23,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -31,8 +36,9 @@ jobs:
       - run: bun run typecheck
       - run: bun test
       - run: bun run build
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+        env:
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: dist
       - name: Deploy
