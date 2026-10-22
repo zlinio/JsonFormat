@@ -1,6 +1,7 @@
 import type { SVGProps } from "react";
 
 const paths = {
+  language: "M3 5h12M9 3v2M5 5c0 5 4 9 8 11M13 5c0 5-4 9-10 11M13 21l4-11 4 11m-6.5-4h5",
   copy: "M9 9h11v11H9z M15 9V4H4v11h5",
   download: "M12 3v12m-5-5 5 5 5-5M4 15v5h16v-5",
   trash: "M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7m4-7v7",

@@ -11,7 +11,7 @@ scope.onmessage = (event: MessageEvent<{ source: string; indentation: Indentatio
     result = {
       status: "error",
       issue: {
-        message: "无法处理这段内容，请缩小内容或检查 JSON 结构后重试。",
+        code: "ProcessingFailed",
         offset: 0,
         length: 0,
         line: 1,

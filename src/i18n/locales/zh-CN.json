@@ -1,0 +1,92 @@
+{
+  "app": {
+    "title": "JSON Format · 结构，一目了然",
+    "description": "粘贴 JSON，自动格式化、校验和折叠。所有内容仅在浏览器内处理，支持无损数字、复制和下载。",
+    "workspace": "JSON 格式化工作区"
+  },
+  "pane": {
+    "input": "原始内容",
+    "output": "格式化结果",
+    "inputBadge": "输入",
+    "outputBadge": "输出"
+  },
+  "actions": {
+    "clear": "清空输入",
+    "foldAll": "折叠全部",
+    "unfoldAll": "展开全部",
+    "download": "下载 JSON",
+    "copy": "复制",
+    "closeToast": "关闭提示",
+    "language": "切换语言"
+  },
+  "editor": {
+    "inputLabel": "JSON 输入",
+    "outputLabel": "格式化 JSON 结果",
+    "placeholder": "在这里粘贴 JSON …"
+  },
+  "state": {
+    "emptyTitle": "清晰的结构，从这里开始",
+    "emptyBody": "在左侧粘贴 JSON，格式化结果会自动呈现。",
+    "pendingTitle": "正在整理结构…",
+    "pendingBody": "保留每一个值，只整理它们的排列。",
+    "errorTitle": "还差一点，就整理好了",
+    "jumpToError": "定位到第 {{line}} 行，第 {{column}} 列"
+  },
+  "notifications": {
+    "copySuccess": "格式化结果已复制",
+    "copyFallback": "无法访问剪贴板，已选中结果，请按 Ctrl/Cmd + C 复制",
+    "downloadSuccess": "已下载 {{filename}}"
+  },
+  "errors": {
+    "InvalidSymbol": "发现无效字符，请使用标准 JSON 语法。",
+    "InvalidNumberFormat": "数字格式不正确，请检查小数点或指数。",
+    "PropertyNameExpected": "属性名需要使用双引号。",
+    "ValueExpected": "此处缺少有效的 JSON 值。",
+    "ColonExpected": "属性名后缺少冒号 :。",
+    "CommaExpected": "相邻的属性或元素之间缺少逗号 ,。",
+    "CloseBraceExpected": "对象缺少结束的大括号 }。",
+    "CloseBracketExpected": "数组缺少结束的方括号 ]。",
+    "EndOfFileExpected": "JSON 结束后仍有内容，请只输入一个 JSON 值。",
+    "InvalidCommentToken": "标准 JSON 不支持注释，请移除注释。",
+    "UnexpectedEndOfComment": "注释未结束；标准 JSON 不支持注释。",
+    "UnexpectedEndOfString": "字符串缺少结束的双引号。",
+    "UnexpectedEndOfNumber": "数字不完整，请补全小数或指数。",
+    "InvalidUnicode": "Unicode 转义应为 \\u 加四位十六进制数字。",
+    "InvalidEscapeCharacter": "字符串中存在无效的转义字符。",
+    "InvalidCharacter": "字符串中包含未转义的控制字符。",
+    "InvalidJson": "JSON 语法不正确。",
+    "InputTooLarge": "内容过大，最多支持 {{limit, number}} 个字符。请缩小内容后重试。",
+    "TooDeep": "嵌套超过 {{limit}} 层，请简化 JSON 结构。",
+    "OutputTooLarge": "展开后的内容过大，请减少数组元素或嵌套层数后重试。",
+    "WorkerUnavailable": "格式化服务启动失败，请刷新页面后重试。",
+    "ProcessingFailed": "无法处理这段内容，请缩小内容或检查 JSON 结构后重试。"
+  },
+  "codeMirror": {
+    "Find": "查找",
+    "Replace": "替换",
+    "next": "下一个",
+    "previous": "上一个",
+    "all": "全部",
+    "match case": "区分大小写",
+    "regexp": "正则表达式",
+    "by word": "全词匹配",
+    "replace": "替换",
+    "replace all": "全部替换",
+    "close": "关闭",
+    "Go to line": "跳转到行",
+    "go": "跳转",
+    "Diagnostics": "诊断信息",
+    "No diagnostics": "没有诊断信息",
+    "Fold line $": "收起第 $ 行",
+    "Unfold line $": "展开第 $ 行",
+    "folded code": "已折叠的代码",
+    "unfold": "展开",
+    "Folded lines": "已折叠行",
+    "Unfolded lines": "已展开行",
+    "to": "至",
+    "current match": "当前匹配项",
+    "on line": "所在行",
+    "replaced match on line $": "已替换第 $ 行的匹配项",
+    "replaced $ matches": "已替换 $ 个匹配项"
+  }
+}

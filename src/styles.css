@@ -45,6 +45,12 @@ svg { flex-shrink: 0; }
 main { padding: 0; }
 .workspace { background: var(--surface); }
 .toolbar-divider { display: inline-block; width: 1px; height: 15px; background: var(--border); flex-shrink: 0; margin: 0 5px; }
+.pane-actions { flex-shrink: 0; }
+.language-switcher { position: relative; display: flex; }
+.language-menu { position: absolute; top: calc(100% + 8px); right: 0; width: 152px; padding: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 6px 20px #23364b14; z-index: 300; }
+.language-menu button { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 36px; padding: 6px 10px; border: 0; border-radius: 3px; background: transparent; color: var(--ink); font-size: 12px; text-align: left; }
+.language-menu button:hover, .language-menu button:focus-visible { background: var(--accent-wash); }
+.language-menu button[aria-checked="true"] { color: var(--accent); }
 .panes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); position: relative; }
 .pane { min-width: 0; display: flex; flex-direction: column; }
 .input-pane { border-right: 1px solid var(--border); }

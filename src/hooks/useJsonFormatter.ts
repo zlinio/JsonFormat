@@ -23,7 +23,7 @@ export function useJsonFormatter(source: string, indentation: Indentation): Form
           result: {
             status: "error",
             issue: {
-              message: "格式化服务启动失败，请刷新页面后重试。",
+              code: "WorkerUnavailable",
               offset: 0,
               length: 0,
               line: 1,

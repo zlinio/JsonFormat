@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import type { RefObject } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import type { ReactCodeMirrorRef } from "@uiw/react-codemirror";
@@ -7,12 +8,16 @@ import { HighlightStyle, indentUnit, syntaxHighlighting } from "@codemirror/lang
 import { tags } from "@lezer/highlight";
 import { setDiagnostics } from "@codemirror/lint";
 import { EditorView } from "@codemirror/view";
+import { Compartment } from "@codemirror/state";
+import { search, SearchQuery, setSearchQuery } from "@codemirror/search";
 import type { Indentation, JsonIssue } from "../lib/json";
 import { jsonFoldGutter } from "./jsonFoldGutter";
+import { editorLanguage, translateOpenEditorUI } from "../i18n/editorLanguage";
+import { normalizeLanguage } from "../i18n/resources";
+import { issueMessage } from "../i18n/issueMessage";
 
 interface Props {
   value: string;
-  label: string;
   dark: boolean;
   wrap: boolean;
   indentation: Indentation;
@@ -24,7 +29,6 @@ interface Props {
 
 export function JsonEditor({
   value,
-  label,
   dark,
   wrap,
   indentation,
@@ -33,21 +37,45 @@ export function JsonEditor({
   onChange,
   editorRef,
 }: Props) {
+  const { t, i18n } = useTranslation();
+  const locale = normalizeLanguage(i18n.resolvedLanguage ?? "en") ?? "en";
   const localRef = useRef<ReactCodeMirrorRef>(null);
   const editor = editorRef ?? localRef;
+  const languageCompartment = useMemo(() => new Compartment(), []);
+  const languageExtension = useMemo(() => editorLanguage(locale, readOnly), [locale, readOnly]);
+  const configureLanguage = useCallback((view: EditorView) => {
+    const panel = view.dom.querySelector(".cm-search");
+    const field = (name: string) => panel?.querySelector<HTMLInputElement>('input[name="' + name + '"]');
+    const searchField = field("search");
+    const active = document.activeElement;
+    const scrollTop = view.scrollDOM.scrollTop;
+    const scrollLeft = view.scrollDOM.scrollLeft;
+    // Preserve drafts as well as committed queries if CodeMirror remounts a panel.
+    const effects = searchField ? [setSearchQuery.of(new SearchQuery({
+      search: searchField.value, replace: field("replace")?.value ?? "",
+      caseSensitive: field("case")?.checked, regexp: field("re")?.checked,
+      wholeWord: field("word")?.checked,
+    })), languageCompartment.reconfigure(languageExtension)]
+      : [languageCompartment.reconfigure(languageExtension)];
+    view.dispatch({ effects });
+    view.scrollDOM.scrollTop = scrollTop;
+    view.scrollDOM.scrollLeft = scrollLeft;
+    if (active instanceof HTMLElement && active.isConnected && document.activeElement !== active) {
+      active.focus({ preventScroll: true });
+    }
+  }, [languageCompartment, languageExtension]);
+  // Run after the wrapper has applied its own extension configuration.
+  useEffect(() => {
+    if (editor.current?.view) configureLanguage(editor.current.view);
+  }, [configureLanguage, editor]);
   const extensions = useMemo(
     () => [
       json(),
+      search(),
       jsonFoldGutter(),
+      languageCompartment.of([]),
+      translateOpenEditorUI,
       indentUnit.of(" ".repeat(indentation)),
-      EditorView.contentAttributes.of({
-        "aria-label": label,
-        role: "textbox",
-        "aria-multiline": "true",
-        "aria-readonly": String(readOnly),
-        tabindex: "0",
-        spellcheck: "false",
-      }),
       syntaxHighlighting(
         HighlightStyle.define([
           { tag: tags.propertyName, color: "var(--code-key)" },
@@ -99,7 +127,7 @@ export function JsonEditor({
       ),
       ...(wrap ? [EditorView.lineWrapping] : []),
     ],
-    [label, dark, wrap, indentation, readOnly],
+    [dark, wrap, indentation, readOnly, languageCompartment],
   );
 
   useEffect(() => {
@@ -114,17 +142,24 @@ export function JsonEditor({
                 from: Math.min(issue.offset, value.length),
                 to: Math.min(issue.offset + Math.max(1, issue.length), value.length),
                 severity: "error",
-                message: issue.message,
+                message: issueMessage(t, issue),
               },
             ]
           : [],
       ),
     );
-  }, [issue, value, editor]);
+  }, [issue, value, editor, t]);
+
+  const basicSetup = useMemo(() => ({
+    lineNumbers: true, foldGutter: false, highlightActiveLine: !readOnly,
+    highlightActiveLineGutter: !readOnly, autocompletion: false,
+    closeBrackets: false, searchKeymap: true, tabSize: indentation,
+  }), [readOnly, indentation]);
 
   return (
     <CodeMirror
       ref={editor}
+      onCreateEditor={configureLanguage}
       value={value}
       onChange={onChange}
       className="json-editor"
@@ -134,17 +169,7 @@ export function JsonEditor({
       readOnly={readOnly}
       editable={!readOnly}
       indentWithTab={false}
-      placeholder="在这里粘贴 JSON …"
-      basicSetup={{
-        lineNumbers: true,
-        foldGutter: false,
-        highlightActiveLine: !readOnly,
-        highlightActiveLineGutter: !readOnly,
-        autocompletion: false,
-        closeBrackets: false,
-        searchKeymap: true,
-        tabSize: indentation,
-      }}
+      basicSetup={basicSetup}
     />
   );
 }

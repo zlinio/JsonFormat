@@ -1,5 +1,6 @@
 import { codeFolding, foldable, foldedRanges, foldEffect, syntaxTree, unfoldEffect } from '@codemirror/language';
-import type { EditorState, Extension } from '@codemirror/state';
+import { EditorState } from '@codemirror/state';
+import type { Extension } from '@codemirror/state';
 import { EditorView, GutterMarker, gutter } from '@codemirror/view';
 
 function foldedOnLine(state: EditorState, from: number, to: number) {
@@ -14,7 +15,7 @@ function syncButton(button: HTMLButtonElement, state: EditorState) {
   const line = state.doc.lineAt(Number(button.dataset.lineFrom));
   const open = !foldedOnLine(state, line.from, line.to);
   button.setAttribute('aria-expanded', String(open));
-  button.title = `${open ? '收起' : '展开'}第 ${line.number} 行`;
+  button.title = state.phrase(open ? 'Fold line $' : 'Unfold line $', line.number);
   button.setAttribute('aria-label', button.title);
 }
 
@@ -84,7 +85,8 @@ export function jsonFoldGutter(): Extension {
       },
     }),
     EditorView.updateListener.of(update => {
-      if (!update.docChanged && foldedRanges(update.startState) === foldedRanges(update.state)) return;
+      if (!update.docChanged && foldedRanges(update.startState) === foldedRanges(update.state)
+        && update.startState.facet(EditorState.phrases) === update.state.facet(EditorState.phrases)) return;
       for (const button of update.view.dom.querySelectorAll<HTMLButtonElement>('.cm-fold-toggle')) {
         syncButton(button, update.state);
       }

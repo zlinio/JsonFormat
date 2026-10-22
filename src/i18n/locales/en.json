@@ -1,0 +1,92 @@
+{
+  "app": {
+    "title": "JSON Format · Clear structure",
+    "description": "Paste JSON to format, validate and fold it instantly. Processed in your browser, with lossless numbers, copy and download.",
+    "workspace": "JSON formatting workspace"
+  },
+  "pane": {
+    "input": "Source",
+    "output": "Formatted JSON",
+    "inputBadge": "INPUT",
+    "outputBadge": "OUTPUT"
+  },
+  "actions": {
+    "clear": "Clear input",
+    "foldAll": "Fold all",
+    "unfoldAll": "Unfold all",
+    "download": "Download JSON",
+    "copy": "Copy",
+    "closeToast": "Dismiss notification",
+    "language": "Change language"
+  },
+  "editor": {
+    "inputLabel": "JSON input",
+    "outputLabel": "Formatted JSON output",
+    "placeholder": "Paste JSON here …"
+  },
+  "state": {
+    "emptyTitle": "See your JSON clearly",
+    "emptyBody": "Paste JSON on the left. Formatted output appears automatically.",
+    "pendingTitle": "Formatting your JSON…",
+    "pendingBody": "Keeping every value, refining the layout.",
+    "errorTitle": "Almost there — check your JSON",
+    "jumpToError": "Go to line {{line}}, column {{column}}"
+  },
+  "notifications": {
+    "copySuccess": "Formatted JSON copied",
+    "copyFallback": "Clipboard unavailable. Output selected; press Ctrl/Cmd + C to copy.",
+    "downloadSuccess": "Downloaded {{filename}}"
+  },
+  "errors": {
+    "InvalidSymbol": "Invalid character. Use standard JSON syntax.",
+    "InvalidNumberFormat": "Invalid number. Check the decimal point or exponent.",
+    "PropertyNameExpected": "Property names must use double quotes.",
+    "ValueExpected": "A valid JSON value is missing here.",
+    "ColonExpected": "Missing colon : after the property name.",
+    "CommaExpected": "Missing comma , between properties or elements.",
+    "CloseBraceExpected": "Missing closing brace } for the object.",
+    "CloseBracketExpected": "Missing closing bracket ] for the array.",
+    "EndOfFileExpected": "Unexpected content after JSON. Enter a single JSON value.",
+    "InvalidCommentToken": "Standard JSON does not allow comments. Remove the comment.",
+    "UnexpectedEndOfComment": "Unterminated comment. Standard JSON does not allow comments.",
+    "UnexpectedEndOfString": "Missing closing double quote for the string.",
+    "UnexpectedEndOfNumber": "Incomplete number. Complete the decimal or exponent.",
+    "InvalidUnicode": "Unicode escapes must use \\u followed by four hexadecimal digits.",
+    "InvalidEscapeCharacter": "Invalid escape character in the string.",
+    "InvalidCharacter": "Unescaped control character in the string.",
+    "InvalidJson": "Invalid JSON syntax.",
+    "InputTooLarge": "Input is too large. The limit is {{limit, number}} characters.",
+    "TooDeep": "Nesting exceeds {{limit}} levels. Simplify the JSON structure.",
+    "OutputTooLarge": "Formatted output is too large. Reduce the number of array elements or nesting levels.",
+    "WorkerUnavailable": "The formatter could not start. Refresh the page and try again.",
+    "ProcessingFailed": "Unable to process this content. Reduce its size or check the JSON structure."
+  },
+  "codeMirror": {
+    "Find": "Find",
+    "Replace": "Replace",
+    "next": "next",
+    "previous": "previous",
+    "all": "all",
+    "match case": "match case",
+    "regexp": "regexp",
+    "by word": "by word",
+    "replace": "replace",
+    "replace all": "replace all",
+    "close": "close",
+    "Go to line": "Go to line",
+    "go": "go",
+    "Diagnostics": "Diagnostics",
+    "No diagnostics": "No diagnostics",
+    "Fold line $": "Fold line $",
+    "Unfold line $": "Unfold line $",
+    "folded code": "folded code",
+    "unfold": "unfold",
+    "Folded lines": "Folded lines",
+    "Unfolded lines": "Unfolded lines",
+    "to": "to",
+    "current match": "current match",
+    "on line": "on line",
+    "replaced match on line $": "replaced match on line $",
+    "replaced $ matches": "replaced $ matches"
+  }
+}

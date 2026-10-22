@@ -4,8 +4,18 @@ export const MAX_INPUT_LENGTH = 2_000_000;
 export const MAX_DEPTH = 256;
 export const MAX_OUTPUT_LENGTH = 10_000_000;
 export type Indentation = 2 | 4;
+export const parserIssueCodes = [
+  "InvalidSymbol", "InvalidNumberFormat", "PropertyNameExpected", "ValueExpected",
+  "ColonExpected", "CommaExpected", "CloseBraceExpected", "CloseBracketExpected",
+  "EndOfFileExpected", "InvalidCommentToken", "UnexpectedEndOfComment",
+  "UnexpectedEndOfString", "UnexpectedEndOfNumber", "InvalidUnicode",
+  "InvalidEscapeCharacter", "InvalidCharacter",
+] as const;
+export type IssueCode = typeof parserIssueCodes[number] | "InvalidJson" | "InputTooLarge"
+  | "TooDeep" | "OutputTooLarge" | "WorkerUnavailable" | "ProcessingFailed";
 export interface JsonIssue {
-  message: string;
+  code: IssueCode;
+  params?: { limit: number };
   offset: number;
   length: number;
   line: number;
@@ -20,36 +30,19 @@ export function isBlankJsonInput(source: string): boolean {
   return source.length <= MAX_INPUT_LENGTH && /^[ \t\r\n]*$/.test(source);
 }
 
-const messages: Record<string, string> = {
-  InvalidSymbol: "发现无效字符，请使用标准 JSON 语法。",
-  InvalidNumberFormat: "数字格式不正确，请检查小数点或指数。",
-  PropertyNameExpected: "属性名需要使用双引号。",
-  ValueExpected: "此处缺少有效的 JSON 值。",
-  ColonExpected: "属性名后缺少冒号 :。",
-  CommaExpected: "相邻的属性或元素之间缺少逗号 ,。",
-  CloseBraceExpected: "对象缺少结束的大括号 }。",
-  CloseBracketExpected: "数组缺少结束的方括号 ]。",
-  EndOfFileExpected: "JSON 结束后仍有内容，请只输入一个 JSON 值。",
-  InvalidCommentToken: "标准 JSON 不支持注释，请移除注释。",
-  UnexpectedEndOfComment: "注释未结束；标准 JSON 不支持注释。",
-  UnexpectedEndOfString: "字符串缺少结束的双引号。",
-  UnexpectedEndOfNumber: "数字不完整，请补全小数或指数。",
-  InvalidUnicode: "Unicode 转义应为 \\u 加四位十六进制数字。",
-  InvalidEscapeCharacter: "字符串中存在无效的转义字符。",
-  InvalidCharacter: "字符串中包含未转义的控制字符。",
-};
-
 export function locateIssue(
   source: string,
   offset: number,
   length: number,
-  message: string,
+  code: IssueCode,
+  params?: JsonIssue["params"],
 ): JsonIssue {
   const boundedOffset = Math.min(Math.max(0, offset), source.length);
   const before = source.slice(0, boundedOffset);
   const lines = before.split(/\r\n|\r|\n/);
   return {
-    message,
+    code,
+    ...(params ? { params } : {}),
     offset: boundedOffset,
     length,
     line: lines.length,
@@ -64,7 +57,7 @@ export function formatJson(source: string, indentation: Indentation = 2): Format
   if (source.length > MAX_INPUT_LENGTH) {
     return {
       status: "error",
-      issue: locateIssue(source, 0, 0, "内容过大，最多支持 2,000,000 个字符。请缩小内容后重试。"),
+      issue: locateIssue(source, 0, 0, "InputTooLarge", { limit: MAX_INPUT_LENGTH }),
     };
   }
   if (isBlankJsonInput(source)) return { status: "empty" };
@@ -86,7 +79,7 @@ export function formatJson(source: string, indentation: Indentation = 2): Format
           source,
           scanner.getTokenOffset(),
           1,
-          `嵌套超过 ${MAX_DEPTH} 层，请简化 JSON 结构。`,
+          "TooDeep", { limit: MAX_DEPTH },
         ),
       };
     }
@@ -99,11 +92,12 @@ export function formatJson(source: string, indentation: Indentation = 2): Format
     source,
     {
       onError(code, offset, length) {
+        const name = printParseErrorCode(code);
         issue ??= locateIssue(
           source,
           offset,
           length,
-          messages[printParseErrorCode(code)] ?? "JSON 语法不正确。",
+          (parserIssueCodes as readonly string[]).includes(name) ? name as IssueCode : "InvalidJson",
         );
       },
     },
@@ -126,7 +120,7 @@ export function formatJson(source: string, indentation: Indentation = 2): Format
   if (outputLength > MAX_OUTPUT_LENGTH) {
     return {
       status: "error",
-      issue: locateIssue(source, 0, 0, "展开后的内容过大，请减少数组元素或嵌套层数后重试。"),
+      issue: locateIssue(source, 0, 0, "OutputTooLarge"),
     };
   }
   // Apply the library's edits in one pass. Its applyEdits implementation copies
