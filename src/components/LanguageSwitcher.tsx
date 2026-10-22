@@ -1,18 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Icon } from "./Icon";
-import type { Locale } from "../i18n/resources";
+import { languagePreference } from "../i18n";
+import type { LanguagePreference } from "../i18n/languagePreference";
 
-const choices: { code: Locale; label: string }[] = [
+const choices: { code: LanguagePreference; label?: string }[] = [
+  { code: "auto" },
   { code: "zh-CN", label: "简体中文" },
   { code: "en", label: "English" },
 ];
 
 export function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
+  const [preference, setPreference] = useState(languagePreference.get);
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const followBrowser = () => {
+      if (preference === "auto") void i18n.changeLanguage();
+    };
+    window.addEventListener("languagechange", followBrowser);
+    return () => window.removeEventListener("languagechange", followBrowser);
+  }, [i18n, preference]);
 
   useEffect(() => {
     if (!open) return;
@@ -85,17 +96,19 @@ export function LanguageSwitcher() {
               key={choice.code}
               type="button"
               role="menuitemradio"
-              aria-checked={i18n.resolvedLanguage === choice.code}
-              lang={choice.code}
-              tabIndex={i18n.resolvedLanguage === choice.code ? 0 : -1}
+              aria-checked={preference === choice.code}
+              lang={choice.code === "auto" ? undefined : choice.code}
+              tabIndex={preference === choice.code ? 0 : -1}
               onClick={() => {
-                void i18n.changeLanguage(choice.code);
+                languagePreference.set(choice.code);
+                setPreference(choice.code);
+                void i18n.changeLanguage();
                 setOpen(false);
                 trigger.current?.focus();
               }}
             >
-              <span>{choice.label}</span>
-              {i18n.resolvedLanguage === choice.code && (
+              <span>{choice.code === "auto" ? t("actions.followBrowser") : choice.label}</span>
+              {preference === choice.code && (
                 <Icon name="check" width={15} height={15} />
               )}
             </button>

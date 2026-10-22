@@ -17,7 +17,8 @@
     "download": "Download JSON",
     "copy": "Copy",
     "closeToast": "Dismiss notification",
-    "language": "Change language"
+    "language": "Change language",
+    "followBrowser": "Follow browser"
   },
   "editor": {
     "inputLabel": "JSON input",

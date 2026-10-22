@@ -5,6 +5,7 @@ import { languageStorageKey, normalizeLanguage, resources } from "../src/i18n/re
 import { issueMessage } from "../src/i18n/issueMessage";
 import { formatJson, MAX_INPUT_LENGTH, parserIssueCodes } from "../src/lib/json";
 import type { IssueCode, JsonIssue } from "../src/lib/json";
+import { createLanguagePreference } from "../src/i18n/languagePreference";
 
 function entries(value: Record<string, unknown>, prefix = ""): [string, string][] {
   return Object.entries(value).flatMap(([key, item]) => {
@@ -114,5 +115,84 @@ describe("language detection", () => {
       if (original) Object.defineProperty(globalThis, "window", original);
       else Reflect.deleteProperty(globalThis, "window");
     }
+  });
+});
+
+describe("follow browser preference", () => {
+  function memoryStorage(initial?: string) {
+    const values = new Map(initial ? [[languageStorageKey, initial]] : []);
+    return {
+      getItem: (key: string) => values.get(key) ?? null,
+      setItem: (key: string, value: string) => { values.set(key, value); },
+      removeItem: (key: string) => { values.delete(key); },
+    };
+  }
+
+  async function initialize(preference: ReturnType<typeof createLanguagePreference>, browserLanguages: () => string[]) {
+    const detector = new LanguageDetector();
+    detector.addDetector(preference.detector);
+    detector.addDetector({ name: "browserPreference", lookup: browserLanguages });
+    const instance = createInstance();
+    await instance.use(detector).init({
+      resources, supportedLngs: ["zh-CN", "en"], fallbackLng: "en", load: "currentOnly",
+      detection: { order: ["languagePreference", "browserPreference"], caches: [],
+        convertDetectedLanguage: language => normalizeLanguage(language) ?? language },
+    });
+    return instance;
+  }
+
+  test("switches a saved manual choice to auto and detects again after reload", async () => {
+    const storage = memoryStorage("zh-CN");
+    const preference = createLanguagePreference(() => storage);
+    const instance = await initialize(preference, () => ["en-US"]);
+    expect(preference.get()).toBe("zh-CN");
+    expect(instance.resolvedLanguage).toBe("zh-CN");
+
+    preference.set("auto");
+    await instance.changeLanguage();
+    expect(preference.get()).toBe("auto");
+    expect(instance.resolvedLanguage).toBe("en");
+    expect(storage.getItem(languageStorageKey)).toBeNull();
+
+    const reloadedPreference = createLanguagePreference(() => storage);
+    const reloaded = await initialize(reloadedPreference, () => ["zh-TW"]);
+    expect(reloadedPreference.get()).toBe("auto");
+    expect(reloaded.resolvedLanguage).toBe("zh-CN");
+    expect(storage.getItem(languageStorageKey)).toBeNull();
+  });
+
+  test("distinguishes explicit English from auto even when both resolve to English", async () => {
+    const storage = memoryStorage();
+    const preference = createLanguagePreference(() => storage);
+    let browserLanguages = ["en-US"];
+    const instance = await initialize(preference, () => browserLanguages);
+    expect(preference.get()).toBe("auto");
+    preference.set("en");
+    await instance.changeLanguage();
+    expect(preference.get()).toBe("en");
+    expect(storage.getItem(languageStorageKey)).toBe("en");
+    browserLanguages = ["zh-CN"];
+    await instance.changeLanguage();
+    expect(instance.resolvedLanguage).toBe("en");
+
+    preference.set("auto");
+    await instance.changeLanguage();
+    expect(instance.resolvedLanguage).toBe("zh-CN");
+    browserLanguages = ["fr-FR"];
+    await instance.changeLanguage();
+    expect(instance.resolvedLanguage).toBe("en");
+    expect(preference.get()).toBe("auto");
+  });
+
+  test("manual and automatic switching still work when storage is blocked", async () => {
+    const preference = createLanguagePreference(() => { throw new Error("Storage blocked"); });
+    const instance = await initialize(preference, () => ["en-US"]);
+    preference.set("zh-CN");
+    await instance.changeLanguage();
+    expect(instance.resolvedLanguage).toBe("zh-CN");
+    preference.set("auto");
+    await instance.changeLanguage();
+    expect(preference.get()).toBe("auto");
+    expect(instance.resolvedLanguage).toBe("en");
   });
 });

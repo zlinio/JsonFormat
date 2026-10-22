@@ -17,7 +17,8 @@
     "download": "下载 JSON",
     "copy": "复制",
     "closeToast": "关闭提示",
-    "language": "切换语言"
+    "language": "切换语言",
+    "followBrowser": "跟随浏览器"
   },
   "editor": {
     "inputLabel": "JSON 输入",
