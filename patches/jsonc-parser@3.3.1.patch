@@ -1,0 +1,26 @@
+diff --git a/lib/esm/impl/format.js b/lib/esm/impl/format.js
+index 8663a1f385b08ddb8d2cc32bd3fc793b6751737c..58c34baec99d92643b867b7d8c5a7b2a49b0f07d 100644
+--- a/lib/esm/impl/format.js
++++ b/lib/esm/impl/format.js
+@@ -51,7 +51,7 @@ export function format(documentText, range, options) {
+             return repeat(eol, numberLineBreaks) + repeat(indentValue, initialIndentLevel + indentLevel);
+         }
+         const amountOfSpaces = indentValue.length * (initialIndentLevel + indentLevel);
+-        if (!eolFastPathSupported || amountOfSpaces > cachedBreakLinesWithSpaces[indentType][eol].length) {
++        if (!eolFastPathSupported || amountOfSpaces >= cachedBreakLinesWithSpaces[indentType][eol].length) {
+             return eol + repeat(indentValue, initialIndentLevel + indentLevel);
+         }
+         if (amountOfSpaces <= 0) {
+diff --git a/lib/umd/impl/format.js b/lib/umd/impl/format.js
+index 2b9f2bc54a9ad4ad38a99bbaab4da57f89d40f3d..19686a4726884fb72972e155d359de7be5c3dfcb 100644
+--- a/lib/umd/impl/format.js
++++ b/lib/umd/impl/format.js
+@@ -62,7 +62,7 @@
+                 return repeat(eol, numberLineBreaks) + repeat(indentValue, initialIndentLevel + indentLevel);
+             }
+             const amountOfSpaces = indentValue.length * (initialIndentLevel + indentLevel);
+-            if (!eolFastPathSupported || amountOfSpaces > string_intern_1.cachedBreakLinesWithSpaces[indentType][eol].length) {
++            if (!eolFastPathSupported || amountOfSpaces >= string_intern_1.cachedBreakLinesWithSpaces[indentType][eol].length) {
+                 return eol + repeat(indentValue, initialIndentLevel + indentLevel);
+             }
+             if (amountOfSpaces <= 0) {
