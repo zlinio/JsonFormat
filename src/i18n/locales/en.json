@@ -21,10 +21,8 @@
     "followBrowser": "Follow browser"
   },
   "theme": {
-    "change": "Change theme",
-    "system": "Follow system",
-    "light": "Light",
-    "dark": "Dark"
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
   },
   "editor": {
     "inputLabel": "JSON input",

@@ -21,10 +21,8 @@
     "followBrowser": "跟随浏览器"
   },
   "theme": {
-    "change": "切换主题",
-    "system": "跟随系统",
-    "light": "浅色",
-    "dark": "深色"
+    "switchToLight": "切换到浅色模式",
+    "switchToDark": "切换到深色模式"
   },
   "editor": {
     "inputLabel": "JSON 输入",

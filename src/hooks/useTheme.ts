@@ -20,7 +20,7 @@ export function useTheme() {
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#0c0c0c" : "#ffffff");
   }, [theme]);
 
-  return { theme, preference, setPreference(value: ThemePreference) {
+  return { theme, setPreference(value: ThemePreference) {
     saveThemePreference(value);
     setPreference(value);
   } };

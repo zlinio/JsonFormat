@@ -17,7 +17,7 @@ type Notice = {
 
 export default function App() {
   const { t, i18n } = useTranslation();
-  const { theme, preference, setPreference } = useTheme();
+  const { theme, setPreference } = useTheme();
   const [source, setSource] = useState("");
   const [toast, setToast] = useState<Notice | null>(null);
   const toastTimer = useRef<number | undefined>(undefined);
@@ -120,7 +120,7 @@ export default function App() {
                 <button className="icon-button" disabled={!valid} onClick={copyOutput}
                   aria-label={t("actions.copy")} title={t("actions.copy")}><Icon name="copy" /></button>
                 <LanguageSwitcher />
-                <ThemeSwitcher theme={theme} preference={preference} onChange={setPreference} />
+                <ThemeSwitcher theme={theme} onChange={setPreference} />
               </div>
             </div>
             <div className="editor-container result-container" aria-busy={result.status === "pending"}>

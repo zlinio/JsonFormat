@@ -1,16 +1,15 @@
 import { useTranslation } from "react-i18next";
-import type { Theme, ThemePreference } from "../lib/theme";
-import { PreferenceMenu } from "./PreferenceMenu";
+import type { Theme } from "../lib/theme";
+import { Icon } from "./Icon";
 
-export function ThemeSwitcher({ theme, preference, onChange }: {
-  theme: Theme; preference: ThemePreference; onChange: (value: ThemePreference) => void;
+export function ThemeSwitcher({ theme, onChange }: {
+  theme: Theme; onChange: (value: Theme) => void;
 }) {
   const { t } = useTranslation();
-  return <PreferenceMenu<ThemePreference> label={t("theme.change")}
-    icon={preference === "system" ? "monitor" : theme === "dark" ? "moon" : "sun"}
-    value={preference} onChange={onChange} choices={[
-      { value: "system", label: t("theme.system") },
-      { value: "light", label: t("theme.light") },
-      { value: "dark", label: t("theme.dark") },
-    ]} />;
+  const nextTheme = theme === "dark" ? "light" : "dark";
+  const label = t(nextTheme === "light" ? "theme.switchToLight" : "theme.switchToDark");
+  return <button type="button" className="icon-button" aria-label={label} title={label}
+    onClick={() => onChange(nextTheme)}>
+    <Icon name={nextTheme === "light" ? "sun" : "moon"} />
+  </button>;
 }
