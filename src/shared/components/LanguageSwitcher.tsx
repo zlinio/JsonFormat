@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { languagePreference } from "../i18n";
-import type { LanguagePreference } from "../i18n/languagePreference";
+import { languagePreference } from "../../i18n";
+import type { LanguagePreference } from "../../i18n/languagePreference";
 import { PreferenceMenu } from "./PreferenceMenu";
 
 export function LanguageSwitcher() {

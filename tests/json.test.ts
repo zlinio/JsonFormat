@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { formatJson, MAX_DEPTH, MAX_INPUT_LENGTH } from "../src/lib/json";
+import { formatJson, MAX_DEPTH, MAX_INPUT_LENGTH } from "../src/tools/json-format/lib/json";
 import { applyEdits, format } from "jsonc-parser";
 
 const SAMPLE =

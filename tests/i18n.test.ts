@@ -2,9 +2,9 @@ import { describe, expect, test } from "bun:test";
 import { createInstance } from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { languageStorageKey, normalizeLanguage, resources } from "../src/i18n/resources";
-import { issueMessage } from "../src/i18n/issueMessage";
-import { formatJson, MAX_INPUT_LENGTH, parserIssueCodes } from "../src/lib/json";
-import type { IssueCode, JsonIssue } from "../src/lib/json";
+import { issueMessage } from "../src/tools/json-format/i18n/issueMessage";
+import { formatJson, MAX_INPUT_LENGTH, parserIssueCodes } from "../src/tools/json-format/lib/json";
+import type { IssueCode, JsonIssue } from "../src/tools/json-format/lib/json";
 import { createLanguagePreference } from "../src/i18n/languagePreference";
 
 function entries(value: Record<string, unknown>, prefix = ""): [string, string][] {
@@ -25,7 +25,7 @@ describe("translation resources", () => {
       expect(text.trim().length).toBeGreaterThan(0);
       expect(chinese.get(key)?.trim().length).toBeGreaterThan(0);
       expect(parameters(chinese.get(key)!)).toEqual(parameters(text));
-      if (key.startsWith("codeMirror.")) {
+      if (key.startsWith("json.codeMirror.")) {
         expect(chinese.get(key)!.split("$").length).toBe(text.split("$").length);
       }
     }
@@ -39,7 +39,7 @@ describe("translation resources", () => {
     for (const code of codes) {
       const issue: JsonIssue = { code, params: { limit: 256 }, offset: 0, length: 0, line: 1, column: 1 };
       const message = issueMessage(instance.t, issue);
-      expect(message).not.toBe("errors." + code);
+      expect(message).not.toBe("json.errors." + code);
       expect(message).not.toContain("{{");
       expect(message).not.toContain("undefined");
       expect(message.length).toBeGreaterThan(0);
@@ -65,9 +65,9 @@ describe("translation resources", () => {
     const issue: JsonIssue = { code: "InputTooLarge", params: { limit: MAX_INPUT_LENGTH },
       offset: 0, length: 0, line: 1, column: 1 };
     expect(issueMessage(instance.t, issue)).toContain("2,000,000");
-    expect(instance.t("state.jumpToError", { line: 83, column: 12 })).toBe("Go to line 83, column 12");
+    expect(instance.t("json.state.jumpToError", { line: 83, column: 12 })).toBe("Go to line 83, column 12");
     await instance.changeLanguage("zh-CN");
-    expect(instance.t("state.jumpToError", { line: 83, column: 12 })).toBe("定位到第 83 行，第 12 列");
+    expect(instance.t("json.state.jumpToError", { line: 83, column: 12 })).toBe("定位到第 83 行，第 12 列");
   });
 });
 

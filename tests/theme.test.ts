@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
-import { readThemePreference, resolveTheme, saveThemePreference, themeStorageKey } from "../src/lib/theme";
+import { readThemePreference, resolveTheme, saveThemePreference, themeStorageKey } from "../src/shared/lib/theme";
 
 describe("theme preference", () => {
   test("persists explicit choices and removes the override when following the system", () => {

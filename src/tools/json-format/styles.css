@@ -1,0 +1,61 @@
+.json-format { --pane-header-height: 44px; width: 100%; min-height: 100dvh; }
+.json-format .workspace { background: var(--surface); }
+.json-format .toolbar-divider { display: inline-block; width: 1px; height: 15px; background: var(--border); flex-shrink: 0; margin: 0 5px; }
+.json-format .pane-actions { flex-shrink: 0; }
+.json-format .panes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); position: relative; }
+.json-format .pane { min-width: 0; display: flex; flex-direction: column; }
+.json-format .input-pane { border-right: 1px solid var(--border); }
+.json-format .pane-header { padding: 0 12px; height: var(--pane-header-height); flex-shrink: 0; border-bottom: 1px solid var(--border); }
+.json-format .pane-header h2 { font-size: 12px; font-weight: 600; margin: 0; white-space: nowrap; }
+.json-format .type-label { font: 9px var(--font-code); color: var(--muted); letter-spacing: .8px; background: var(--surface-alt); padding: 3px 5px; border-radius: 4px; }
+.json-format .output-label { color: var(--teal); background: var(--teal-wash); }
+.json-format .editor-container { height: max(320px, calc(100dvh - var(--pane-header-height))); min-width: 0; position: relative; }
+.json-format .json-editor { height: 100%; }
+.json-format .json-editor .cm-editor { height: 100%; }
+.json-format .json-editor .cm-content { tab-size: 2; }
+.json-format .json-editor .cm-scroller { scrollbar-color: var(--scrollbar) var(--surface); }
+.json-format .json-editor .cm-panels, .json-format .json-editor .cm-dialog { background: var(--surface-alt); color: var(--ink); border-color: var(--border); }
+.json-format .json-editor .cm-textfield, .json-format .json-editor .cm-dialog input { background: var(--surface); color: var(--ink); border: 1px solid var(--border); }
+.json-format .json-editor .cm-button { color: var(--ink); background: var(--surface-alt); background-image: none; border: 1px solid var(--border); }
+.json-format .json-editor .cm-button:not(:disabled):hover { background: var(--accent-wash); }
+.json-format .json-editor input[type="checkbox"] { accent-color: var(--accent); }
+.json-format .json-editor .cm-searchMatch { background: var(--search-match); outline: 1px solid var(--border); }
+.json-format .json-editor .cm-searchMatch.cm-searchMatch-selected { background: var(--search-selected); }
+.json-format .json-editor .cm-selectionMatch { background: var(--accent-wash); }
+.json-format .json-editor .cm-matchingBracket { color: var(--ink); background: var(--selection); }
+.json-format .json-editor .cm-diagnostic-error { border-left-color: var(--danger); }
+.json-format .json-editor .cm-jsonFoldGutter .cm-gutterElement { display: flex; align-items: flex-start; justify-content: center; padding: 0; }
+.json-format .cm-fold-spacer, .json-format .cm-fold-toggle { width: 28px; height: 28px; flex-shrink: 0; }
+.json-format .cm-fold-toggle { display: flex; align-items: center; justify-content: center; padding: 0; margin: 0; border: 0; border-radius: 4px; background: transparent; color: var(--muted); line-height: 1; }
+.json-format .cm-fold-toggle:hover { color: var(--accent); background: var(--accent-wash); }
+.json-format .cm-fold-toggle:active { background: var(--selection); }
+.json-format .cm-fold-toggle svg { display: block; transform: rotate(0deg); transform-origin: center; transition: transform 180ms ease-in-out; }
+.json-format .cm-fold-toggle[aria-expanded="true"] svg { transform: rotate(90deg); }
+.json-format .json-editor .cm-editor.cm-focused { box-shadow: inset 0 0 0 1px var(--selection); }
+.json-format .result-placeholder { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 26px; background-image: radial-gradient(var(--border) .65px, transparent .65px); background-size: 17px 17px; }
+.json-format .result-placeholder h3 { font-size: 14px; font-weight: 550; margin: 23px 0 8px; }
+.json-format .result-placeholder p { color: var(--muted); font-size: 11px; line-height: 1.8; margin: 0; }
+.json-format .empty-symbol { display: flex; align-items: center; justify-content: center; width: 94px; height: 76px; }
+.json-format .brace-symbol { gap: 9px; color: var(--accent); }
+.json-format .brace-symbol > span { font: 41px var(--font-code); font-weight: 300; }
+.json-format .brace-symbol > div { display: flex; flex-direction: column; gap: 6px; width: 20px; }
+.json-format .brace-symbol i { height: 3px; border-radius: 2px; background: var(--selection); }
+.json-format .brace-symbol i:nth-child(2) { width: 13px; margin-left: 5px; background: var(--teal); opacity: .5; }
+.json-format .error-symbol { color: var(--danger); }
+.json-format .error-jump { color: var(--danger); margin-top: 15px; }
+.json-format .spinner { width: 24px; height: 24px; border: 2px solid var(--selection); border-top-color: var(--accent); border-radius: 50%; animation: json-spin .8s linear infinite; }
+@keyframes json-spin { to { transform: rotate(360deg); } }
+@media (max-width: 1050px) {
+.json-format .type-label { display: none; }
+}
+@media (max-width: 700px) {
+.json-format .panes { grid-template-columns: minmax(0, 1fr); }
+.json-format .input-pane { border-right: 0; border-bottom: 1px solid var(--border); }
+.json-format .type-label { display: inline-block; }
+.json-format .editor-container { height: max(280px, calc((100dvh - 1px) / 2 - var(--pane-header-height))); }
+
+}
+@media (max-width: 420px) {
+.json-format .type-label { display: none; }
+.json-format .toolbar-divider { display: none; }
+}

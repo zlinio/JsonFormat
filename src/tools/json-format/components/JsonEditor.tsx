@@ -13,7 +13,7 @@ import { search, SearchQuery, setSearchQuery } from "@codemirror/search";
 import type { Indentation, JsonIssue } from "../lib/json";
 import { jsonFoldGutter } from "./jsonFoldGutter";
 import { editorLanguage, translateOpenEditorUI } from "../i18n/editorLanguage";
-import { normalizeLanguage } from "../i18n/resources";
+import { normalizeLanguage } from "../../../i18n/resources";
 import { issueMessage } from "../i18n/issueMessage";
 
 interface Props {

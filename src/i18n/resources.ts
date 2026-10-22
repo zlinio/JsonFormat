@@ -1,9 +1,12 @@
 import en from "./locales/en.json";
 import zhCN from "./locales/zh-CN.json";
 
+import jsonEn from "../tools/json-format/locales/en.json";
+import jsonZhCN from "../tools/json-format/locales/zh-CN.json";
+
 export const resources = {
-  en: { translation: en },
-  "zh-CN": { translation: zhCN },
+  en: { translation: { ...en, json: jsonEn } },
+  "zh-CN": { translation: { ...zhCN, json: jsonZhCN } },
 } as const;
 
 export type Locale = keyof typeof resources;

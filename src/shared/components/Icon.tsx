@@ -1,6 +1,8 @@
 import type { SVGProps } from "react";
 
 const paths = {
+  back: "M20 12H4m6-6-6 6 6 6",
+  braces: "M9 3H7a2 2 0 0 0-2 2v4a3 3 0 0 1-2 3 3 3 0 0 1 2 3v4a2 2 0 0 0 2 2h2M15 3h2a2 2 0 0 1 2 2v4a3 3 0 0 0 2 3 3 3 0 0 0-2 3v4a2 2 0 0 1-2 2h-2",
   language: "M3 5h12M9 3v2M5 5c0 5 4 9 8 11M13 5c0 5-4 9-10 11M13 21l4-11 4 11m-6.5-4h5",
   copy: "M9 9h11v11H9z M15 9V4H4v11h5",
   download: "M12 3v12m-5-5 5 5 5-5M4 15v5h16v-5",

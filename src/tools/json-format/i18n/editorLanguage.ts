@@ -1,11 +1,11 @@
 import { EditorState } from "@codemirror/state";
 import type { Extension } from "@codemirror/state";
 import { EditorView, placeholder } from "@codemirror/view";
-import { resources } from "./resources";
-import type { Locale } from "./resources";
+import { resources } from "../../../i18n/resources";
+import type { Locale } from "../../../i18n/resources";
 
 export function editorLanguage(locale: Locale, readOnly: boolean): Extension {
-  const text = resources[locale].translation;
+  const text = resources[locale].translation.json;
   return [
     EditorState.phrases.of(text.codeMirror),
     placeholder(text.editor.placeholder),
