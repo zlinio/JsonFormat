@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "json-format",
+      "name": "toolbox",
       "dependencies": {
         "@codemirror/lang-json": "6.0.2",
         "@codemirror/language": "6.13.1",

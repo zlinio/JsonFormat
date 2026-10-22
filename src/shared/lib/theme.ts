@@ -1,5 +1,6 @@
 export type ThemePreference = "system" | "light" | "dark";
 export type Theme = "light" | "dark";
+// Keep the original key so existing preferences survive the Toolbox rename.
 export const themeStorageKey = "json-format.theme";
 
 export function readThemePreference(storage: () => Pick<Storage, "getItem"> = () => window.localStorage): ThemePreference {

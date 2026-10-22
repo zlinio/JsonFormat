@@ -1,5 +1,6 @@
 {
-  "name": "json-format",
+  "name": "toolbox",
+  "description": "A collection of browser-based tools built with React, TypeScript, Tailwind CSS, and Bun.",
   "private": true,
   "version": "1.0.0",
   "type": "module",
